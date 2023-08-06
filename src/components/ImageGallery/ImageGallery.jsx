@@ -21,8 +21,7 @@ class ImageGallery extends Component {
   };
 
   render() {
-    const { images, isLoading, error, showModal, selectedImage, isLastPage } =
-      this.props;
+    const { images, isLoading, error, showModal, isLastPage } = this.props;
 
     return (
       <ImageGalleryContainer>
