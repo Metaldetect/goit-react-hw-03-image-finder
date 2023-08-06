@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import getProducts from '../Api/Api';
+import { AppContainer } from './AppStyles';
+import getProducts from '../../Api/Api';
 
-import Searchbar from './Searchbar/Searchbar';
-import ImageGallery from './ImageGallery/ImageGallery';
+import Searchbar from '../Searchbar/Searchbar';
+import ImageGallery from '../ImageGallery/ImageGallery';
 // import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 // import Button from '../Button/Button';
 // import Modal from '../Modal/Modal';
@@ -62,7 +63,7 @@ class App extends Component {
       this.state;
 
     return (
-      <div>
+      <AppContainer>
         <Searchbar onSubmit={this.handleSearchSubmit} />
         <ImageGallery
           images={images}
@@ -73,7 +74,7 @@ class App extends Component {
           isLastPage={isLastPage}
           loadMore={this.handleLoadMore}
         />
-      </div>
+      </AppContainer>
     );
   }
 }
