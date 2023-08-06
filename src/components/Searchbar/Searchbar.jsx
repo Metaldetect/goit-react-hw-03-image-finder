@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { FaSearch } from 'react-icons/fa';
 
 import {
   SearchbarHead,
@@ -23,13 +24,16 @@ class Searchbar extends Component {
       return;
     }
     this.props.onSubmit(this.state.query);
+    this.setState({ query: '' });
   };
 
   render() {
     return (
       <SearchbarHead>
         <SearchbarForm onSubmit={this.handleSubmit}>
-          <SearchbarButton type="submit">Sabmit</SearchbarButton>
+          <SearchbarButton type="submit">
+            <FaSearch className="search-icon" />
+          </SearchbarButton>
 
           <SearchbarInput
             type="text"
