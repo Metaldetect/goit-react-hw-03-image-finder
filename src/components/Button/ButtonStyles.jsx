@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 
 export const SubmitButton = styled.button`
+  width: 200px;
+  height: 50px;
+  margin: 0 auto;
   padding: 8px 16px;
   border-radius: 2px;
   background-color: #3f51b5;
@@ -10,7 +13,6 @@ export const SubmitButton = styled.button`
   color: #fff;
   border: 0;
   text-decoration: none;
-  cursor: pointer;
   font-family: inherit;
   font-size: 18px;
   line-height: 24px;
