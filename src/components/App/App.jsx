@@ -55,33 +55,62 @@ class App extends Component {
     }
   };
 
-  fetchImages = async query => {
-    const { page } = this.state;
-    const fetchedImages = await getProducts(query, page);
-    return fetchedImages;
-  };
-
-  handleLoadMore = async () => {
+  fetchImages = async () => {
     const { searchTerm, page } = this.state;
 
     this.setState({ isLoading: true });
 
     try {
-      const fetchedImages = await this.fetchImages(searchTerm, page + 1);
-      if (fetchedImages.length === 0) {
-        this.setState({ isLastPage: true, isLoading: false });
-        return;
-      }
-
+      const { images, message, isLastPage } = await getProducts(
+        searchTerm,
+        page
+      );
       this.setState(prevState => ({
-        images: [...prevState.images, ...fetchedImages],
-        page: prevState.page + 1,
+        images: [...prevState.images, ...images],
+        error: message,
+        isLastPage,
         isLoading: false,
+        page: prevState.page + 1,
       }));
     } catch (error) {
-      this.setState({ isLoading: false });
+      this.setState({
+        error: 'Error fetching products. Please try again.',
+        isLoading: false,
+      });
     }
   };
+
+  handleLoadMore = () => {
+    this.fetchImages();
+  };
+
+  // fetchImages = async query => {
+  //   const { page } = this.state;
+  //   const fetchedImages = await getProducts(query, page);
+  //   return fetchedImages;
+  // };
+
+  // handleLoadMore = async () => {
+  //   const { searchTerm, page } = this.state;
+
+  //   this.setState({ isLoading: true });
+
+  //   try {
+  //     const fetchedImages = await this.fetchImages(searchTerm, page + 1);
+  //     if (fetchedImages.length === 0) {
+  //       this.setState({ isLastPage: true, isLoading: false });
+  //       return;
+  //     }
+
+  //     this.setState(prevState => ({
+  //       images: [...prevState.images, ...fetchedImages],
+  //       page: prevState.page + 1,
+  //       isLoading: false,
+  //     }));
+  //   } catch (error) {
+  //     this.setState({ isLoading: false });
+  //   }
+  // };
 
   handleImageClick = selectedImage => {
     this.setState({ showModal: true, selectedImage });

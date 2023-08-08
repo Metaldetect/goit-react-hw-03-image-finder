@@ -5,18 +5,14 @@ import {
   ImageGaletyItemImg,
 } from './ImageGalleryItemStyles';
 
-const ImageGalleryItem = ({ image, onClick }) => {
-  const { id, webformatURL, largeImageURL } = image;
-
-  const handleImageClick = () => {
-    // Call the onClick function provided by the parent component (ImageGallery)
-    // This function will handle the click event for the image, e.g., showing the larger version.
-    onClick(largeImageURL);
+const ImageGalleryItem = ({ image, onItemClick }) => {
+  const handleClick = () => {
+    onItemClick(image.largeImageURL);
   };
 
   return (
-    <ImageGaletyItemLi onClick={handleImageClick}>
-      <ImageGaletyItemImg src={webformatURL} id={id} />
+    <ImageGaletyItemLi onClick={handleClick}>
+      <ImageGaletyItemImg src={image.webformatURL} alt={image.tags} />
     </ImageGaletyItemLi>
   );
 };
@@ -24,9 +20,10 @@ const ImageGalleryItem = ({ image, onClick }) => {
 ImageGalleryItem.propTypes = {
   image: PropTypes.shape({
     webformatURL: PropTypes.string.isRequired,
-    id: PropTypes.number.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
   }).isRequired,
-  onClick: PropTypes.func.isRequired,
+  onItemClick: PropTypes.func.isRequired,
 };
 
 export default ImageGalleryItem;
