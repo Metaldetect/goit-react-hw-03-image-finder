@@ -1,23 +1,42 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://pixabay.com/api/';
-const URL_KEY = '38647531-e08c59cfd663d065d133cb71d';
-
-const getProducts = async searchTerm => {
-  const url = `${BASE_URL}?key=${URL_KEY}&q=${encodeURIComponent(
-    searchTerm
-  )}&page=1&image_type=photo&orientation=horizontal&per_page=12`;
+const getProducts = async (query, page) => {
+  const BASE_URL = 'https://pixabay.com/api/';
+  const API_KEY = '38647531-e08c59cfd663d065d133cb71d';
 
   try {
-    const response = await axios.get(url);
-    if (response.status !== 200) {
-      throw new Error('Request failed.');
+    const response = await axios.get(
+      `${BASE_URL}?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+    );
+
+    const { hits, totalHits } = response.data;
+
+    if (hits.length === 0) {
+      return {
+        message: 'Sorry, there are no images matching your request...',
+        images: [],
+        isLastPage: true,
+      };
     }
 
-    return response.data.hits;
+    const modHits = hits.map(({ id, tags, webformatURL, largeImageURL }) => ({
+      id,
+      tags,
+      webformatURL,
+      largeImageURL,
+    }));
+
+    return {
+      message: '',
+      images: modHits,
+      isLastPage: modHits.length + page * 12 >= totalHits,
+    };
   } catch (error) {
-    console.error('Error fetching products:', error);
-    return [];
+    return {
+      message: 'Error fetching products. Please try again.',
+      images: [],
+      isLastPage: true,
+    };
   }
 };
 
