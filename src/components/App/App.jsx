@@ -4,32 +4,27 @@ import getProducts from '../../Api/Api';
 
 import Searchbar from '../Searchbar/Searchbar';
 import ImageGallery from '../ImageGallery/ImageGallery';
-// import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
-// import Button from '../Button/Button';
-// import Modal from '../Modal/Modal';
-// import Loader from '../Loader/Loader';
+import Button from '../Button/Button';
+import ImageModal from '../Modal/Modal';
 
 class App extends Component {
   state = {
     searchTerm: '',
-    products: [],
     images: [],
     isLoading: false,
     error: null,
-    query: '',
     page: 1,
-    showModal: false,
-    selectedImage: null,
     isLastPage: false,
   };
 
   componentDidUpdate(_, prevState) {
     if (prevState.query !== this.state.query) {
       this.setState({ images: [], page: 1, isLastPage: false }, () => {
-        this.getProducts();
+        this.fetchImages();
       });
     }
   }
+
   handleSearchSubmit = async query => {
     if (this.state.searchTerm === query) {
       return;
@@ -45,9 +40,11 @@ class App extends Component {
     });
 
     try {
-      const fetchedImages = await getProducts(query);
+      const { images, message, isLastPage } = await getProducts(query, 1);
       this.setState({
-        images: fetchedImages,
+        images,
+        error: message,
+        isLastPage,
         isLoading: false,
       });
     } catch (error) {
@@ -56,6 +53,42 @@ class App extends Component {
         isLoading: false,
       });
     }
+  };
+
+  fetchImages = async query => {
+    const { page } = this.state;
+    const fetchedImages = await getProducts(query, page);
+    return fetchedImages;
+  };
+
+  handleLoadMore = async () => {
+    const { searchTerm, page } = this.state;
+
+    this.setState({ isLoading: true });
+
+    try {
+      const fetchedImages = await this.fetchImages(searchTerm, page + 1);
+      if (fetchedImages.length === 0) {
+        this.setState({ isLastPage: true, isLoading: false });
+        return;
+      }
+
+      this.setState(prevState => ({
+        images: [...prevState.images, ...fetchedImages],
+        page: prevState.page + 1,
+        isLoading: false,
+      }));
+    } catch (error) {
+      this.setState({ isLoading: false });
+    }
+  };
+
+  handleImageClick = selectedImage => {
+    this.setState({ showModal: true, selectedImage });
+  };
+
+  closeImageModal = () => {
+    this.setState({ showModal: false, selectedImage: '' });
   };
 
   render() {
@@ -69,13 +102,21 @@ class App extends Component {
           images={images}
           isLoading={isLoading}
           error={error}
-          showModal={showModal}
-          selectedImage={selectedImage}
-          isLastPage={isLastPage}
-          loadMore={this.handleLoadMore}
+          onItemClick={this.handleImageClick}
         />
+        {showModal && (
+          <ImageModal
+            isOpen={showModal}
+            imageUrl={selectedImage}
+            onClose={this.closeImageModal}
+          />
+        )}
+        {!isLoading && images.length > 0 && !isLastPage && (
+          <Button onClick={this.handleLoadMore} />
+        )}
       </AppContainer>
     );
   }
 }
+
 export default App;
