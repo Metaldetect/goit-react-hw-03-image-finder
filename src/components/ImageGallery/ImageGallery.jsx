@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import { ImageGalleryContainer, ImageGalleryUl } from './ImageGalleryStyles';
+import { nanoid } from 'nanoid';
 
 const ImageGallery = ({ images, onItemClick }) => {
   return (
@@ -8,7 +9,7 @@ const ImageGallery = ({ images, onItemClick }) => {
       <ImageGalleryUl>
         {images.map(image => (
           <ImageGalleryItem
-            key={image.id}
+            key={nanoid()}
             image={image}
             onItemClick={onItemClick}
           />
