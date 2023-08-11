@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import { ImageGalleryContainer, ImageGalleryUl } from './ImageGalleryStyles';
-import LoadingSpinner from '../Loader/Loader';
 import { nanoid } from 'nanoid';
 
-const ImageGallery = ({ images, onItemClick, isLoading }) => {
+const ImageGallery = ({ images, onItemClick }) => {
   return (
     <ImageGalleryContainer>
       <ImageGalleryUl>
@@ -16,7 +15,6 @@ const ImageGallery = ({ images, onItemClick, isLoading }) => {
           />
         ))}
       </ImageGalleryUl>
-      {isLoading && <LoadingSpinner size={50} />}
     </ImageGalleryContainer>
   );
 };
@@ -29,7 +27,6 @@ ImageGallery.propTypes = {
       largeImageURL: PropTypes.string.isRequired,
     })
   ).isRequired,
-  isLoading: PropTypes.bool.isRequired,
   onItemClick: PropTypes.func.isRequired,
 };
 export default ImageGallery;

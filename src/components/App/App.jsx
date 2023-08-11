@@ -5,6 +5,7 @@ import Searchbar from '../Searchbar/Searchbar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Button from '../Button/Button';
 import ImageModal from '../Modal/Modal';
+import LoadingSpinner from '../Loader/Loader';
 
 class App extends Component {
   state = {
@@ -61,7 +62,6 @@ class App extends Component {
   };
 
   handleLoadMore = () => {
-    this.fetchImages();
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
@@ -84,19 +84,24 @@ class App extends Component {
         <Searchbar onSubmit={this.handleSearchSubmit} />
         <ImageGallery
           images={images}
-          isLoading={isLoading}
           error={error}
           onItemClick={this.handleImageClick}
         />
-        {showModal && (
-          <ImageModal
-            isOpen={showModal}
-            imageUrl={selectedImage}
-            onClose={this.closeImageModal}
-          />
-        )}
-        {!isLoading && images.length > 0 && !isLastPage && (
-          <Button onClick={this.handleLoadMore} />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            {showModal && (
+              <ImageModal
+                isOpen={showModal}
+                imageUrl={selectedImage}
+                onClose={this.closeImageModal}
+              />
+            )}
+            {!isLoading && images.length > 0 && !isLastPage && (
+              <Button onClick={this.handleLoadMore} />
+            )}
+          </>
         )}
       </AppContainer>
     );
