@@ -17,15 +17,29 @@ class ImageModal extends Component {
     }
   };
 
+  handleBackdropClick = event => {
+    if (event.target === event.currentTarget) {
+      this.props.onClose();
+    }
+  };
+
+  handleImageClick = event => {
+    event.stopPropagation();
+  };
+
   render() {
-    const { isOpen, imageUrl, onClose } = this.props;
+    const { isOpen, imageUrl } = this.props;
 
     return (
       <>
         {isOpen && (
-          <ModalOverlay onClick={onClose}>
+          <ModalOverlay onClick={this.handleBackdropClick}>
             <ModalContent>
-              <ModalImg src={imageUrl} alt="Large" />
+              <ModalImg
+                src={imageUrl}
+                alt="Large"
+                onClick={this.handleImageClick}
+              />
             </ModalContent>
           </ModalOverlay>
         )}

@@ -8,7 +8,7 @@ import ImageModal from '../Modal/Modal';
 
 class App extends Component {
   state = {
-    searchTerm: '',
+    query: '',
     images: [],
     isLoading: false,
     error: null,
@@ -17,59 +17,40 @@ class App extends Component {
   };
 
   componentDidUpdate(_, prevState) {
-    if (prevState.query !== this.state.query) {
-      this.setState({ images: [], page: 1, isLastPage: false }, () => {
-        this.fetchImages();
-      });
+    if (
+      this.state.page !== prevState.page ||
+      this.state.query !== prevState.query
+    ) {
+      this.fetchImages();
     }
   }
-
-  handleSearchSubmit = async query => {
-    if (this.state.searchTerm === query) {
+  handleSearchSubmit = query => {
+    if (this.state.query === query) {
       return;
     }
 
     this.setState({
-      searchTerm: query,
+      query: query,
       images: [],
       isLoading: true,
       error: null,
       page: 1,
       isLastPage: false,
     });
-
-    try {
-      const { images, message, isLastPage } = await getProducts(query, 1);
-      this.setState({
-        images,
-        error: message,
-        isLastPage,
-        isLoading: false,
-      });
-    } catch (error) {
-      this.setState({
-        error: 'Error fetching products. Please try again.',
-        isLoading: false,
-      });
-    }
   };
 
   fetchImages = async () => {
-    const { searchTerm, page } = this.state;
+    const { query, page } = this.state;
 
     this.setState({ isLoading: true });
 
     try {
-      const { images, message, isLastPage } = await getProducts(
-        searchTerm,
-        page
-      );
+      const { images, message, isLastPage } = await getProducts(query, page);
       this.setState(prevState => ({
         images: [...prevState.images, ...images],
         error: message,
         isLastPage,
         isLoading: false,
-        page: prevState.page + 1,
       }));
     } catch (error) {
       this.setState({
@@ -81,6 +62,9 @@ class App extends Component {
 
   handleLoadMore = () => {
     this.fetchImages();
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   };
 
   handleImageClick = selectedImage => {
