@@ -29,7 +29,7 @@ const getProducts = async (query, page) => {
     return {
       message: '',
       images: modHits,
-      isLastPage: modHits.length + page * 12 >= totalHits,
+      isLastPage: page < Math.ceil(totalHits / 12),
     };
   } catch (error) {
     return {

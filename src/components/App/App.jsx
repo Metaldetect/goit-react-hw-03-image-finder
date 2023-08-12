@@ -76,17 +76,13 @@ class App extends Component {
   };
 
   render() {
-    const { images, isLoading, error, showModal, selectedImage, isLastPage } =
+    const { images, isLoading, showModal, selectedImage, isLastPage } =
       this.state;
 
     return (
       <AppContainer>
         <Searchbar onSubmit={this.handleSearchSubmit} />
-        <ImageGallery
-          images={images}
-          error={error}
-          onItemClick={this.handleImageClick}
-        />
+        <ImageGallery images={images} onItemClick={this.handleImageClick} />
         {isLoading ? (
           <LoadingSpinner />
         ) : (
@@ -98,9 +94,7 @@ class App extends Component {
                 onClose={this.closeImageModal}
               />
             )}
-            {!isLoading && images.length > 0 && !isLastPage && (
-              <Button onClick={this.handleLoadMore} />
-            )}
+            {isLastPage && <Button onClick={this.handleLoadMore} />}
           </>
         )}
       </AppContainer>
